@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+
+body, html {
+  height: 100%;
+  line-height: 1.8;
+}
+
+.centered-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Adjust as needed */
+}
+
+.chat-input {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0; /* Updated to remove margin-bottom */
+}
+
+.chat-input input[type="text"],
+.chat-input input[type="file"],
+.chat-input input[type="submit"] {
+  width: 100%;
+  margin-bottom: 0px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.chat-input input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
+
+.chat-input input[type="submit"]:hover {
+  background-color: #45a049;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    word-wrap: break-word;
+    max-width: 200px; /* Adjust max-width as needed */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar (sit on top) -->
+    <a href="{% url 'myapp:home' %}" class="w3-bar-item w3-button w3-wide"><i class="fa fa-unlock"></i> ThreatScan</a>
+    <!-- Right-sided navbar links -->
+    <div class="w3-right w3-hide-small">
+      <a href="#team" class="w3-bar-item w3-button"><i class="fa fa-user"></i> TEAM</a>
+      <a href="#work" class="w3-bar-item w3-button"><i class="fa fa-th"></i> WORK</a>
+      {% if user.is_authenticated %}
+      <a href="" class="w3-bar-item w3-button"><i class="fa fa-th"></i> DASHBOARD</a>
+      <a onclick="logoutFunction()" class="w3-bar-item w3-button"><i class="fa fa-user"></i> LOGOUT</a>
+      <script>
+        function logoutFunction() {
+          // Create a form element
+          var form = document.createElement('form');
+          form.method = 'POST';
+          form.action = "{% url 'myapp:logout' %}";
+      
+          // Add a CSRF token input field
+          var csrfToken = document.createElement('input');
+          csrfToken.type = 'hidden';
+          csrfToken.name = 'csrfmiddlewaretoken';
+          csrfToken.value = "{{ csrf_token }}";
+          form.appendChild(csrfToken);
+      
+          // Append the form to the document body and submit it
+          document.body.appendChild(form);
+          form.submit();
+        }
+      </script>
+      <a href="" class="w3-bar-item w3-button"><i class="fa fa-user"></i> Welcome @{{user}}</a>
+      {% else %}
+      <a href="{% url 'myapp:login' %}" class="w3-bar-item w3-button"><i class="fa fa-user"></i> LOGIN</a>
+      <a href="{% url 'myapp:register' %}" class="w3-bar-item w3-button"><i class="fa fa-user"></i> REGESTER</a>
+      {% endif %}
+    </div>
+  
+<div class="centered-form">
+    <form class="chat-input" method="post">
+        {% csrf_token %}
+        <input type="text" placeholder="Type a message" name="input" id="input">
+        {% comment %} <input type="file" name="file" id="file" accept="image/*"> {% endcomment %}
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% if request.method == 'POST' %}
+<h1>URL Result Analysis</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th style="width: 50%;">URL</th>
+            <th style="width: 50%;">Result</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.URL }}</td>
+            <td>{{ result.Result }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% load static %}
+<link rel="stylesheet" href="{% static 'charts.css' %}">
+<header>
+	<h1>VISUALIZATIONS</h1>
+	<p></p>
+</header>
+
+<div class="-fx-image-gal">
+    <div class="-fx-gal-item">
+        <div class="-fx-gal-image-thumb" tabindex="1">
+            <a href="" target="_blank">
+                {{ chart1|safe }}
+            </a>
+        </div>
+    </div>
+
+    <div class="-fx-gal-item">
+        <div class="-fx-gal-image-thumb" tabindex="1">
+            <a href="" target="_blank">
+                {{ chart2|safe }}
+            </a>
+        </div>
+    </div>
+
+    <div class="-fx-gal-item">
+        <div class="-fx-gal-image-thumb" tabindex="1">
+            <a href="" target="_blank">
+                {{ chart3|safe }}
+            </a>
+        </div>
+    </div>
+
+    <div class="-fx-gal-item">
+        <div class="-fx-gal-image-thumb" tabindex="1">
+            <a href="" target="_blank">
+                {{ chart4|safe }}
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+{% endif %}
+</body>
+</html>
